@@ -26,6 +26,7 @@
 #include <linux/fs.h>
 #include <linux/mman.h>
 #include <linux/shm.h>
+#include <linux/cycles.h>
 
 typedef void (*syscall_t)(void);
 
