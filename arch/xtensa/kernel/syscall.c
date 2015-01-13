@@ -27,6 +27,7 @@
 #include <linux/mman.h>
 #include <linux/shm.h>
 #include <linux/cycles.h>
+#include <linux/smemcpy.h>
 
 typedef void (*syscall_t)(void);
 
