@@ -22,6 +22,8 @@
 #include <linux/syscalls.h>
 #include <linux/fcntl.h>
 #include <linux/aio.h>
+#include <linux/cycles.h>
+#include <linux/smemcpy.h>
 
 #include <asm/uaccess.h>
 #include <asm/ioctls.h>
@@ -261,8 +263,10 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
 					ret = error;
 				break;
 			}
-
+			
+			unsigned before = _get_cycles();
 			written = copy_page_to_iter(buf->page, buf->offset, chars, to);
+			memcpy_cycles += _get_cycles() - before;
 			if (unlikely(written < chars)) {
 				if (!ret)
 					ret = -EFAULT;
@@ -370,8 +374,10 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
 			int error = ops->confirm(pipe, buf);
 			if (error)
 				goto out;
-
+		
+			unsigned before = _get_cycles();
 			ret = copy_page_from_iter(buf->page, offset, chars, from);
+			memcpy_cycles += _get_cycles() - before;
 			if (unlikely(ret < chars)) {
 				error = -EFAULT;
 				goto out;
@@ -414,7 +420,9 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
 			 * FIXME! Is this really true?
 			 */
 			do_wakeup = 1;
+			unsigned before = _get_cycles();
 			copied = copy_page_from_iter(page, 0, PAGE_SIZE, from);
+			memcpy_cycles += _get_cycles() - before;
 			if (unlikely(copied < PAGE_SIZE && iov_iter_count(from))) {
 				if (!ret)
 					ret = -EFAULT;
