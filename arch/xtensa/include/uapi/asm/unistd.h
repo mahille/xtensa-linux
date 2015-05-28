@@ -753,10 +753,16 @@ __SYSCALL(339, sys_memfd_create, 2)
 #define __NR_get_cycles				340
 __SYSCALL(340, sys_get_cycles, 0)
 
-#define __NR_memcpy				341
+#define __NR_memcpy				    341
 __SYSCALL(341, sys_memcpy, 0)
 
-#define __NR_syscall_count			342
+#define __NR_syscreset              342
+__SYSCALL(342, sys_syscreset, 0)
+
+#define __NR_sysctrace              343
+__SYSCALL(343, sys_sysctrace, 0)
+
+#define __NR_syscall_count			344
 
 /*
  * sysxtensa syscall handler
