@@ -31,6 +31,7 @@
 #include <asm/ptrace.h>
 #include <linux/uaccess.h>
 
+#include "systimes.h"
 
 void user_enable_single_step(struct task_struct *child)
 {
@@ -487,6 +488,8 @@ void do_syscall_trace(void)
 
 void do_syscall_trace_enter(struct pt_regs *regs)
 {
+	systimes_enter(regs);
+
 	if (test_thread_flag(TIF_SYSCALL_TRACE)
 			&& (current->ptrace & PT_PTRACED))
 		do_syscall_trace();
@@ -498,6 +501,8 @@ void do_syscall_trace_enter(struct pt_regs *regs)
 
 void do_syscall_trace_leave(struct pt_regs *regs)
 {
+	systimes_leave(regs);
+
 	if ((test_thread_flag(TIF_SYSCALL_TRACE))
 			&& (current->ptrace & PT_PTRACED))
 		do_syscall_trace();

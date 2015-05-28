@@ -778,8 +778,12 @@ __SYSCALL(350, sys_pkey_free, 1)
 __SYSCALL(351, sys_get_cycles, 0)
 #define __NR_memcpy				352
 __SYSCALL(352, sys_memcpy, 0)
+#define __NR_syscreset              		353
+__SYSCALL(353, sys_syscreset, 0)
+#define __NR_sysctrace              		354
+__SYSCALL(354, sys_sysctrace, 0)
 
-#define __NR_syscall_count			353
+#define __NR_syscall_count			355
 
 /*
  * sysxtensa syscall handler
