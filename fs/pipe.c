@@ -231,6 +231,7 @@ static const struct pipe_buf_operations packet_pipe_buf_ops = {
 static ssize_t
 pipe_read(struct kiocb *iocb, struct iov_iter *to)
 {
+	unsigned before;
 	size_t total_len = iov_iter_count(to);
 	struct file *filp = iocb->ki_filp;
 	struct pipe_inode_info *pipe = filp->private_data;
@@ -263,8 +264,8 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
 					ret = error;
 				break;
 			}
-			
-			unsigned before = _get_cycles();
+
+			before = _get_cycles();
 			written = copy_page_to_iter(buf->page, buf->offset, chars, to);
 			memcpy_cycles += _get_cycles() - before;
 			memcpy_bytes += written;
@@ -343,6 +344,7 @@ static inline int is_packetized(struct file *file)
 static ssize_t
 pipe_write(struct kiocb *iocb, struct iov_iter *from)
 {
+	unsigned before;
 	struct file *filp = iocb->ki_filp;
 	struct pipe_inode_info *pipe = filp->private_data;
 	ssize_t ret = 0;
@@ -375,8 +377,8 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
 			int error = ops->confirm(pipe, buf);
 			if (error)
 				goto out;
-		
-			unsigned before = _get_cycles();
+
+			before = _get_cycles();
 			ret = copy_page_from_iter(buf->page, offset, chars, from);
 			memcpy_cycles += _get_cycles() - before;
 			memcpy_bytes += ret;
@@ -422,7 +424,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
 			 * FIXME! Is this really true?
 			 */
 			do_wakeup = 1;
-			unsigned before = _get_cycles();
+			before = _get_cycles();
 			copied = copy_page_from_iter(page, 0, PAGE_SIZE, from);
 			memcpy_cycles += _get_cycles() - before;
 			memcpy_bytes += copied;
