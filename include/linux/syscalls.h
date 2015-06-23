@@ -904,3 +904,6 @@ asmlinkage long sys_pkey_alloc(unsigned long flags, unsigned long init_val);
 asmlinkage long sys_pkey_free(int pkey);
 
 #endif
+
+asmlinkage long sys_get_cycles(unsigned long *val);
+asmlinkage long sys_memcpy(unsigned long *cycles, unsigned long *bytes);
