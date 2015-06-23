@@ -878,3 +878,6 @@ asmlinkage long sys_getrandom(char __user *buf, size_t count,
 			      unsigned int flags);
 asmlinkage long sys_bpf(int cmd, union bpf_attr *attr, unsigned int size);
 #endif
+
+asmlinkage long sys_get_cycles(unsigned long *val);
+asmlinkage long sys_memcpy(unsigned long *cycles, unsigned long *bytes);
