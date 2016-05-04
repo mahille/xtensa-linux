@@ -419,8 +419,28 @@ system_call_fastpath:
 #endif
 	ja ret_from_sys_call  /* and return regs->ax */
 	movq %r10,%rcx
+#ifndef DISABLE_STRACE_SUPPORT
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+	movq %rax,%rdi
+	call systimes_enter
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+#endif
 	call *sys_call_table(,%rax,8)  # XXX:	 rip relative
 	movq %rax,RAX-ARGOFFSET(%rsp)
+#ifndef DISABLE_STRACE_SUPPORT
+	call systimes_leave
+#endif
+
 /*
  * Syscall return path ending with SYSRET (fast path)
  * Has incomplete stack frame and undefined top of stack.

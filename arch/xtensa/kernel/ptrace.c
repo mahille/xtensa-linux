@@ -21,6 +21,7 @@
 #include <linux/smp.h>
 #include <linux/security.h>
 #include <linux/signal.h>
+#include <linux/systimes.h>
 
 #include <asm/pgtable.h>
 #include <asm/page.h>
@@ -28,8 +29,6 @@
 #include <asm/ptrace.h>
 #include <asm/elf.h>
 #include <asm/coprocessor.h>
-
-#include "systimes.h"
 
 void user_enable_single_step(struct task_struct *child)
 {
@@ -338,7 +337,7 @@ void do_syscall_trace(void)
 
 void do_syscall_trace_enter(struct pt_regs *regs)
 {
-	systimes_enter(regs);
+	systimes_enter(regs->areg[2]);
 
 	if (test_thread_flag(TIF_SYSCALL_TRACE)
 			&& (current->ptrace & PT_PTRACED))
@@ -351,7 +350,7 @@ void do_syscall_trace_enter(struct pt_regs *regs)
 
 void do_syscall_trace_leave(struct pt_regs *regs)
 {
-	systimes_leave(regs);
+	systimes_leave();
 
 	if ((test_thread_flag(TIF_SYSCALL_TRACE))
 			&& (current->ptrace & PT_PTRACED))

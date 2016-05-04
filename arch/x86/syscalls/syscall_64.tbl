@@ -330,6 +330,8 @@
 321	common	bpf			sys_bpf
 322	64	get_cycles		sys_get_cycles
 323	64	smemcpy			sys_memcpy
+324     64      syscreset               sys_syscreset
+325     64      sysctrace               sys_sysctrace
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact
