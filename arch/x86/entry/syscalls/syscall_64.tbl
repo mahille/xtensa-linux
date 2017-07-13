@@ -340,6 +340,8 @@
 331	common	pkey_free		sys_pkey_free
 332	64	get_cycles		sys_get_cycles
 333	64	smemcpy			sys_memcpy
+334	64	syscreset		sys_syscreset
+335	64	sysctrace		sys_sysctrace
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact
