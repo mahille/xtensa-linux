@@ -36,6 +36,12 @@
 #include "tick-internal.h"
 #include "timekeeping_internal.h"
 
+// shut up prints
+#undef pr_info
+#undef pr_warn
+#define pr_info(...)
+#define pr_warn(...)
+
 /**
  * clocks_calc_mult_shift - calculate mult/shift factors for scaled math of clocks
  * @mult:	pointer to mult variable
