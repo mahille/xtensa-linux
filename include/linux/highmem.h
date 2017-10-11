@@ -201,13 +201,13 @@ static inline void zero_user_segments(struct page *page,
 
 	BUG_ON(end1 > PAGE_SIZE || end2 > PAGE_SIZE);
 
-	before = _get_cycles();
+	before = prof_start(0xaaaa);
 	if (end1 > start1)
 		memset(kaddr + start1, 0, end1 - start1);
 
 	if (end2 > start2)
 		memset(kaddr + start2, 0, end2 - start2);
-	memcpy_cycles += _get_cycles() - before;
+	memcpy_cycles += prof_stop(0xaaaa) - before;
 
 	kunmap_atomic(kaddr);
 	flush_dcache_page(page);

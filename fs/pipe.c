@@ -49,10 +49,10 @@ unsigned long pipe_user_pages_hard;
 unsigned long pipe_user_pages_soft = PIPE_DEF_BUFFERS * INR_OPEN_CUR;
 
 /*
- * We use a start+len construction, which provides full use of the 
+ * We use a start+len construction, which provides full use of the
  * allocated memory.
  * -- Florian Coosmann (FGC)
- * 
+ *
  * Reads with count = 0 should always return 0.
  * -- Julian Bradfield 1999-06-07.
  *
@@ -285,9 +285,9 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
 				break;
 			}
 
-			before = _get_cycles();
+			before = prof_start(0xaaaa);
 			written = copy_page_to_iter(buf->page, buf->offset, chars, to);
-			memcpy_cycles += _get_cycles() - before;
+			memcpy_cycles += prof_stop(0xaaaa) - before;
 			memcpy_bytes += written;
 			if (unlikely(written < chars)) {
 				if (!ret)
@@ -396,9 +396,9 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
 			if (ret)
 				goto out;
 
-			before = _get_cycles();
+			before = prof_start(0xaaaa);
 			ret = copy_page_from_iter(buf->page, offset, chars, from);
-			memcpy_cycles += _get_cycles() - before;
+			memcpy_cycles += prof_stop(0xaaaa) - before;
 			memcpy_bytes += ret;
 			if (unlikely(ret < chars)) {
 				ret = -EFAULT;
@@ -441,9 +441,9 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
 			 * FIXME! Is this really true?
 			 */
 			do_wakeup = 1;
-			before = _get_cycles();
+			before = prof_start(0xaaaa);
 			copied = copy_page_from_iter(page, 0, PAGE_SIZE, from);
-			memcpy_cycles += _get_cycles() - before;
+			memcpy_cycles += prof_stop(0xaaaa) - before;
 			memcpy_bytes += copied;
 			if (unlikely(copied < PAGE_SIZE && iov_iter_count(from))) {
 				if (!ret)
@@ -879,7 +879,7 @@ SYSCALL_DEFINE1(pipe, int __user *, fildes)
 
 static int wait_for_partner(struct pipe_inode_info *pipe, unsigned int *cnt)
 {
-	int cur = *cnt;	
+	int cur = *cnt;
 
 	while (cur == *cnt) {
 		pipe_wait(pipe);
@@ -954,7 +954,7 @@ static int fifo_open(struct inode *inode, struct file *filp)
 			}
 		}
 		break;
-	
+
 	case FMODE_WRITE:
 	/*
 	 *  O_WRONLY
@@ -974,7 +974,7 @@ static int fifo_open(struct inode *inode, struct file *filp)
 				goto err_wr;
 		}
 		break;
-	
+
 	case FMODE_READ | FMODE_WRITE:
 	/*
 	 *  O_RDWR

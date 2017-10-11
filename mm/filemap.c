@@ -1889,9 +1889,9 @@ page_ok:
 		 * now we can copy it to user space...
 		 */
 
-		before = _get_cycles();
+		before = prof_start(0xaaaa);
 		ret = copy_page_to_iter(page, offset, nr, iter);
-		memcpy_cycles += _get_cycles() - before;
+		memcpy_cycles += prof_stop(0xaaaa) - before;
 		memcpy_bytes += ret;
 		offset += ret;
 		index += offset >> PAGE_SHIFT;
@@ -2838,9 +2838,9 @@ again:
 		if (mapping_writably_mapped(mapping))
 			flush_dcache_page(page);
 
-		start = _get_cycles();
+		start = prof_start(0xaaaa);
 		copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes);
-		memcpy_cycles += _get_cycles() - start;
+		memcpy_cycles += prof_stop(0xaaaa) - start;
 		memcpy_bytes += copied;
 		flush_dcache_page(page);
 
